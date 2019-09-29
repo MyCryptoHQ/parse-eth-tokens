@@ -4,6 +4,8 @@ import { Repository, Reset } from 'nodegit';
 import { fetchRepository, updateRepository } from './git';
 import { OUTPUT_PATH } from './constants';
 
+jest.setTimeout(60000);
+
 beforeAll(callback => {
   rimraf(OUTPUT_PATH, callback);
 });
