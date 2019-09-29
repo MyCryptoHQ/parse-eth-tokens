@@ -1,0 +1,38 @@
+language: node_js
+
+addons:
+  apt:
+    sources:
+      - ubuntu-toolchain-r-test
+    packages:
+      - libstdc++-4.9-dev
+
+cache:
+  yarn: true
+  directories:
+    - node_modules
+    - "$HOME/.cache"
+
+before_install:
+  - npm install -g yarn
+
+install:
+  - yarn --silent
+
+script:
+  - yarn run test
+  - yarn run codecov -f coverage/*.json
+  - yarn run lint
+  - yarn run prettier
+
+before_deploy:
+  - yarn run prepare
+
+deploy:
+  provider: npm
+  email: $NPM_EMAIL
+  api_key: $NPM_API_KEY
+  skip_cleanup: true
+  on:
+    branch: master
+    tags: true
