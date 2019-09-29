@@ -51,7 +51,10 @@ export default {
     // noop
   },
 
-  access() {
-    // noop
-  }
+  access: jest.fn().mockImplementation((path: string, callback: Callback<void>) => {
+    const error = new Error() as NodeJS.ErrnoException;
+    error.code = 'ENOENT';
+
+    callback(error);
+  })
 };
