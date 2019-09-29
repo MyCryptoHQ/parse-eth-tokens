@@ -1,6 +1,6 @@
 import { Command } from 'commander';
-import { parseTokens } from './parser';
 import { NETWORKS, VERSION } from './constants';
+import { parseTokens } from './runner';
 
 /**
  * Parse a comma separated list to an array of networks. This will return all networks if 'all' is used as value.

@@ -1,8 +1,8 @@
 import { parseArray, parseNetworks, run } from './cli';
 import { NETWORKS } from './constants';
-import { parseTokens } from './parser';
+import { parseTokens } from './runner';
 
-jest.mock('./parser', () => ({
+jest.mock('./runner', () => ({
   parseTokens: jest.fn()
 }));
 

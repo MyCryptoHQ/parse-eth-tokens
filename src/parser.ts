@@ -1,10 +1,7 @@
 import fs from 'fs';
 import { promisify } from 'util';
 import { resolve } from 'path';
-import Listr, { ListrTask } from 'listr';
-import { fetchRepository } from './git';
-import { NETWORKS, OUTPUT_PATH, RawToken, Token } from './constants';
-import { sortTokens, validateTokenData } from './utils';
+import { NETWORKS, RawToken, Token, TOKEN_SCHEMA } from './constants';
 
 const readdir = promisify(fs.readdir);
 const readFile = promisify(fs.readFile);
@@ -43,6 +40,23 @@ export const parseJsonFile = async <T>(file: string): Promise<T> => {
   } catch (error) {
     throw new Error(`Failed to parse file ${file}: ${error.message}`);
   }
+};
+
+/**
+ * Validate raw token data, by checking if the required values are set and if the decimals are larger than or equal to
+ * zero. This will strip any unknown fields and rename the 'decimals' field to 'decimal' for compatibility.
+ *
+ * @param {RawToken} token
+ * @return {boolean}
+ */
+export const validateTokenData = (token: RawToken): Token => {
+  const result = TOKEN_SCHEMA.validate(token);
+
+  if (result.error) {
+    throw new Error(`Invalid JSON schema for token ${token.address}: ${result.error.message}`);
+  }
+
+  return result.value as Token;
 };
 
 /**
@@ -92,6 +106,34 @@ export const fixDuplicates = (tokens: Token[]): Token[] => {
 };
 
 /**
+ * Sort tokens alphabetically by symbol.
+ *
+ * @param {Token[]} tokens
+ * @return {Token[]}
+ */
+export const sortTokens = (tokens: Token[]): Token[] => {
+  return tokens.sort((a, b) => a.symbol.localeCompare(b.symbol));
+};
+
+/**
+ * Creates the output folder if it does not exist yet.
+ *
+ * @param {string} path
+ * @return {Promise<void>}
+ */
+export const createOutputFolder = async (path: string): Promise<void> => {
+  try {
+    await access(path);
+  } catch (error) {
+    if (error.code !== 'ENOENT') {
+      throw new Error(`Failed to create output folder: ${error.message}`);
+    }
+
+    await mkdir(path, { recursive: true });
+  }
+};
+
+/**
  * Write the resulting token array to a file on the disk. This assumes that the output path specified exists, and is a
  * folder.
  *
@@ -103,99 +145,4 @@ export const fixDuplicates = (tokens: Token[]): Token[] => {
 export const writeToDisk = async (tokens: Token[], path: string, name: string): Promise<void> => {
   const json = JSON.stringify(tokens, null, 2);
   return writeFile(resolve(path, name), json, 'utf8');
-};
-
-/**
- * Options to pass to the parser.
- */
-interface ParseOptions {
-  /**
-   * The output directory for the parsed files.
-   */
-  output: string;
-
-  /**
-   * The networks to parse.
-   */
-  networks: string[];
-
-  /**
-   * Addresses to exclude from parsing.
-   */
-  exclude: string[];
-}
-
-/**
- * Fetch the token list and parse it to a file that's readable by MyCrypto.
- *
- * @param {ParseOptions} options
- * @return {Promise<void>}
- */
-export const parseTokens = async (options: ParseOptions): Promise<void> => {
-  const listr = new Listr<{ tokens: { [network: string]: Token[] } }>([
-    {
-      title: 'Fetching `ethereum-lists/tokens` repository',
-      task: () => fetchRepository()
-    },
-
-    {
-      title: 'Checking available networks',
-      task: () => checkNetworks(options.networks)
-    },
-
-    {
-      title: 'Parsing token files',
-      task: () => {
-        const tasks = options.networks.map<ListrTask>(network => ({
-          title: network,
-          task: async context => {
-            context.tokens[network] = await parseTokenFiles(
-              resolve(OUTPUT_PATH, 'tokens', network),
-              options.exclude
-            )
-              .then(fixDuplicates)
-              .then(sortTokens);
-          }
-        }));
-
-        return new Listr(tasks);
-      }
-    },
-
-    {
-      title: 'Writing output file(s) to disk',
-      task: context => {
-        const tokens = Object.keys(context.tokens);
-        const path = resolve(process.cwd(), options.output);
-
-        const tasks = tokens.map<ListrTask>(token => ({
-          title: token,
-          task: nestedContext => writeToDisk(nestedContext.tokens[token], path, `${token}.json`)
-        }));
-
-        return new Listr([
-          {
-            title: 'Creating output folder',
-            task: async (_, task) => {
-              try {
-                await access(path);
-                task.skip('Folder already exists');
-              } catch (error) {
-                if (error.code !== 'ENOENT') {
-                  throw new Error(`Failed to create output folder: ${error.message}`);
-                }
-
-                await mkdir(path);
-              }
-            }
-          },
-          ...tasks
-        ]);
-      }
-    }
-  ]);
-
-  await listr.run({
-    tokens: {}
-  });
 };

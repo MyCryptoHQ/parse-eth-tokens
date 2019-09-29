@@ -47,9 +47,9 @@ export default {
       callback()
     ),
 
-  mkdir() {
-    // noop
-  },
+  mkdir: jest
+    .fn()
+    .mockImplementation((path: string, options: any, callback: Callback<void>) => callback()),
 
   access: jest.fn().mockImplementation((path: string, callback: Callback<void>) => {
     const error = new Error() as NodeJS.ErrnoException;
