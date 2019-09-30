@@ -34,13 +34,13 @@ Options:
 #### Parse all available networks
 
 ```
-$ parse-eth-networks --networks all --output ./output
+$ parse-eth-tokens --networks all --output ./output
 ```
 
 #### Parse ETH and ETC network and exclude a few addresses
 
 ```
-$ parse-eth-networks --networks eth,etc --exclude 0x89d24a6b4ccb1b6faa2625fe562bdd9a23260359,0xa74476443119A942dE498590Fe1f2454d7D4aC0d --output ./output
+$ parse-eth-tokens --networks eth,etc --exclude 0x89d24a6b4ccb1b6faa2625fe562bdd9a23260359,0xa74476443119A942dE498590Fe1f2454d7D4aC0d --output ./output
 ```
 
 ## Supported networks
