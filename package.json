@@ -1,6 +1,6 @@
 {
   "name": "parse-eth-tokens",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Tool used to parse the 'ethereum-lists/tokens' repository to a format that is used by MyCrypto",
   "main": "./lib/index.js",
   "repository": "https://github.com/Mrtenz/parse-eth-tokens",
