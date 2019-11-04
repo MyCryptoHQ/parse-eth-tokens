@@ -1,5 +1,5 @@
 import { parseArray, parseNetworks, run } from './cli';
-import { NETWORKS } from './constants';
+import { NETWORK_NAMES, NETWORKS } from './constants';
 import { parseTokens } from './runner';
 
 jest.mock('./runner', () => ({
@@ -18,7 +18,7 @@ describe('parseNetworks', () => {
   });
 
   it('parses a value of all to all networks', () => {
-    expect(parseNetworks('all')).toStrictEqual(NETWORKS);
+    expect(parseNetworks('all')).toStrictEqual(NETWORK_NAMES);
   });
 });
 
@@ -37,7 +37,7 @@ describe('run', () => {
     expect(parseTokens).toHaveBeenCalledTimes(1);
     expect(parseTokens).toHaveBeenCalledWith({
       output: 'foo',
-      networks: NETWORKS,
+      networks: NETWORK_NAMES,
       exclude: ['foo', 'bar']
     });
   });

@@ -1,6 +1,7 @@
 import fs from 'fs';
 import { resolve } from 'path';
 import {
+  addUniqueId,
   checkNetworks,
   createOutputFolder,
   fixDuplicates,
@@ -10,7 +11,7 @@ import {
   validateTokenData,
   writeToDisk
 } from './parser';
-import { NETWORKS, RawToken } from './constants';
+import { NETWORK_NAMES, RawToken, Token } from './constants';
 
 jest.mock('fs');
 
@@ -20,7 +21,7 @@ afterEach(() => {
 
 describe('checkNetworks', () => {
   it('checks for valid networks', () => {
-    expect(() => checkNetworks(NETWORKS)).not.toThrow();
+    expect(() => checkNetworks(NETWORK_NAMES)).not.toThrow();
   });
 
   it('throws an error on invalid networks', () => {
@@ -119,8 +120,8 @@ describe('parseTokenFiles', () => {
   });
 });
 
-describe('fixDuplicates', () => {
-  it('changes the symbol for duplicate tokens', () => {
+describe('addUniqueId', () => {
+  it('adds a deterministic unique ID to tokens', () => {
     const tokens = [
       {
         address: '0x0000000000000000000000000000000000000000',
@@ -129,18 +130,52 @@ describe('fixDuplicates', () => {
       },
       {
         address: '0x0000000000000000000000000000000000000001',
-        symbol: 'FOO',
+        symbol: 'BAR',
         decimal: 18
       },
       {
         address: '0x0000000000000000000000000000000000000002',
-        symbol: 'FOO',
+        symbol: 'BAZ',
         decimal: 18
       },
       {
         address: '0x0000000000000000000000000000000000000003',
-        symbol: 'BAR',
+        symbol: 'QUX',
         decimal: 18
+      }
+    ];
+
+    expect(addUniqueId(tokens as Token[], 1)).toMatchSnapshot();
+    expect(addUniqueId(tokens as Token[], 2)).toMatchSnapshot();
+  });
+});
+
+describe('fixDuplicates', () => {
+  it('changes the symbol for duplicate tokens', () => {
+    const tokens = [
+      {
+        address: '0x0000000000000000000000000000000000000000',
+        symbol: 'FOO',
+        decimal: 18,
+        uuid: ''
+      },
+      {
+        address: '0x0000000000000000000000000000000000000001',
+        symbol: 'FOO',
+        decimal: 18,
+        uuid: ''
+      },
+      {
+        address: '0x0000000000000000000000000000000000000002',
+        symbol: 'FOO',
+        decimal: 18,
+        uuid: ''
+      },
+      {
+        address: '0x0000000000000000000000000000000000000003',
+        symbol: 'BAR',
+        decimal: 18,
+        uuid: ''
       }
     ];
 
@@ -160,22 +195,26 @@ describe('sortTokens', () => {
       {
         address: '0x0000000000000000000000000000000000000000',
         decimal: 18,
-        symbol: 'FOO'
+        symbol: 'FOO',
+        uuid: ''
       },
       {
         address: '0x0000000000000000000000000000000000000000',
         decimal: 18,
-        symbol: 'BAR'
+        symbol: 'BAR',
+        uuid: ''
       },
       {
         address: '0x0000000000000000000000000000000000000000',
         decimal: 18,
-        symbol: 'BAZ'
+        symbol: 'BAZ',
+        uuid: ''
       },
       {
         address: '0x0000000000000000000000000000000000000000',
         decimal: 18,
-        symbol: 'QUX'
+        symbol: 'QUX',
+        uuid: ''
       }
     ];
 
@@ -217,22 +256,26 @@ describe('writeToDisk', () => {
       {
         address: '0x0000000000000000000000000000000000000000',
         symbol: 'FOO',
-        decimal: 18
+        decimal: 18,
+        uuid: ''
       },
       {
         address: '0x0000000000000000000000000000000000000001',
         symbol: 'FOO',
-        decimal: 18
+        decimal: 18,
+        uuid: ''
       },
       {
         address: '0x0000000000000000000000000000000000000002',
         symbol: 'FOO',
-        decimal: 18
+        decimal: 18,
+        uuid: ''
       },
       {
         address: '0x0000000000000000000000000000000000000003',
         symbol: 'BAR',
-        decimal: 18
+        decimal: 18,
+        uuid: ''
       }
     ];
 

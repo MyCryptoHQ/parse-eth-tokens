@@ -1,5 +1,5 @@
 import { Command } from 'commander';
-import { NETWORKS, VERSION } from './constants';
+import { NETWORK_NAMES, NETWORKS, VERSION } from './constants';
 import { parseTokens } from './runner';
 
 /**
@@ -10,7 +10,7 @@ import { parseTokens } from './runner';
  */
 export const parseNetworks = (value: string): string[] => {
   if (value === 'all') {
-    return NETWORKS;
+    return NETWORK_NAMES;
   }
   return parseArray(value);
 };

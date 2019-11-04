@@ -2,6 +2,7 @@ import { resolve } from 'path';
 import Listr, { ListrTask } from 'listr';
 import { fetchRepository } from './git';
 import {
+  addUniqueId,
   checkNetworks,
   createOutputFolder,
   fixDuplicates,
@@ -9,7 +10,7 @@ import {
   sortTokens,
   writeToDisk
 } from './parser';
-import { OUTPUT_PATH, Token } from './constants';
+import { NETWORKS, OUTPUT_PATH, Token } from './constants';
 
 /**
  * Options to pass to the parser.
@@ -55,10 +56,13 @@ export const parseTokens = async (options: ParseOptions): Promise<void> => {
         const tasks = options.networks.map<ListrTask>(network => ({
           title: network,
           task: async context => {
+            const chainId = NETWORKS.find(n => n.name === network)!.chainId;
+
             context.tokens[network] = await parseTokenFiles(
               resolve(OUTPUT_PATH, 'tokens', network),
               options.exclude
             )
+              .then(tokens => addUniqueId(tokens, chainId))
               .then(fixDuplicates)
               .then(sortTokens);
           }
