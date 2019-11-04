@@ -1,13 +1,13 @@
 import fs from 'fs';
 import { promisify } from 'util';
 import { resolve } from 'path';
+import mkdirp from 'mkdirp';
 import getUuidByString from 'uuid-by-string';
 import { NETWORK_NAMES, RawToken, Token, TOKEN_SCHEMA } from './constants';
 
 const readdir = promisify(fs.readdir);
 const readFile = promisify(fs.readFile);
 const writeFile = promisify(fs.writeFile);
-const mkdir = promisify(fs.mkdir);
 const access = promisify(fs.access);
 
 /**
@@ -146,7 +146,7 @@ export const createOutputFolder = async (path: string): Promise<void> => {
       throw new Error(`Failed to create output folder: ${error.message}`);
     }
 
-    await mkdir(path, { recursive: true });
+    mkdirp.sync(path);
   }
 };
 

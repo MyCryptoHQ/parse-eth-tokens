@@ -7,7 +7,7 @@
   "author": "Maarten Zuidhoorn <maarten@zuidhoorn.com>",
   "license": "MIT",
   "engines": {
-    "node": ">=10.12.0"
+    "node": ">=8"
   },
   "bin": {
     "parse-eth-tokens": "./lib/index.js"
@@ -30,6 +30,7 @@
     "@hapi/joi": "^16.1.4",
     "commander": "^3.0.2",
     "listr": "^0.14.3",
+    "mkdirp": "^0.5.1",
     "nodegit": "^0.26.1",
     "request": "^2.88.0",
     "uuid-by-string": "^3.0.1"
@@ -38,6 +39,7 @@
     "@types/hapi__joi": "^15.0.4",
     "@types/jest": "^24.0.18",
     "@types/listr": "^0.14.2",
+    "@types/mkdirp": "^0.5.2",
     "@types/node": "^12.7.8",
     "@types/nodegit": "^0.24.11",
     "codecov": "^3.6.1",

@@ -1,5 +1,6 @@
 import fs from 'fs';
 import { resolve } from 'path';
+import mkdirp from 'mkdirp';
 import {
   addUniqueId,
   checkNetworks,
@@ -232,7 +233,7 @@ describe('createOutputFolder', () => {
   it('creates the output foldder', async () => {
     await expect(createOutputFolder('foo')).resolves.toBeUndefined();
 
-    const mkdir = fs.mkdir as jest.MockedFunction<typeof fs.mkdir>;
+    const mkdir = mkdirp.sync as jest.MockedFunction<typeof mkdirp.sync>;
 
     expect(mkdir.mock.calls[0][0]).toBe('foo');
   });
