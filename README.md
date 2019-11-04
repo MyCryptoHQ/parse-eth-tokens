@@ -47,7 +47,6 @@ $ parse-eth-tokens --networks eth,etc --exclude 0x89d24a6b4ccb1b6faa2625fe562bdd
 
 All networks defined in [`ethereum-lists/tokens`](https://github.com/ethereum-lists/tokens) are supported. Currently, those are:
 
-* Edcoin (ED)
 * Ellaism (ella)
 * Ethersocial (esn)
 * Ethereum Classic (etc)
