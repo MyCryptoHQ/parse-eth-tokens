@@ -1,5 +1,6 @@
 import { ParseOptions, parseTokens } from './runner';
 import {
+  addUniqueId,
   checkNetworks,
   createOutputFolder,
   fixDuplicates,
@@ -15,8 +16,9 @@ jest.mock('./git', () => ({
 jest.mock('./parser', () => ({
   checkNetworks: jest.fn(),
   parseTokenFiles: jest.fn().mockImplementation(() => Promise.resolve()),
+  addUniqueId: jest.fn().mockImplementation(tokens => tokens),
   fixDuplicates: jest.fn().mockImplementation(tokens => tokens),
-  sortTokens: jest.fn(tokens => tokens),
+  sortTokens: jest.fn().mockImplementation(tokens => tokens),
   createOutputFolder: jest.fn().mockImplementation(() => Promise.resolve()),
   writeToDisk: jest.fn().mockImplementation(() => Promise.resolve())
 }));
@@ -36,6 +38,7 @@ describe('parseTokens', () => {
     await expect(parseTokens(options)).resolves.toBeUndefined();
     expect(checkNetworks).toHaveBeenCalledTimes(1);
     expect(parseTokenFiles).toHaveBeenCalledTimes(1);
+    expect(addUniqueId).toHaveBeenCalledTimes(1);
     expect(fixDuplicates).toHaveBeenCalledTimes(1);
     expect(sortTokens).toHaveBeenCalledTimes(1);
     expect(createOutputFolder).toHaveBeenCalledTimes(1);
@@ -52,6 +55,7 @@ describe('parseTokens', () => {
     await expect(parseTokens(options)).resolves.toBeUndefined();
     expect(checkNetworks).toHaveBeenCalledTimes(1);
     expect(parseTokenFiles).toHaveBeenCalledTimes(2);
+    expect(addUniqueId).toHaveBeenCalledTimes(2);
     expect(fixDuplicates).toHaveBeenCalledTimes(2);
     expect(sortTokens).toHaveBeenCalledTimes(2);
     expect(createOutputFolder).toHaveBeenCalledTimes(1);

@@ -31,7 +31,8 @@
     "commander": "^3.0.2",
     "listr": "^0.14.3",
     "nodegit": "^0.26.1",
-    "request": "^2.88.0"
+    "request": "^2.88.0",
+    "uuid-by-string": "^3.0.1"
   },
   "devDependencies": {
     "@types/hapi__joi": "^15.0.4",

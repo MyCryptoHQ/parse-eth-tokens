@@ -1,7 +1,8 @@
 import fs from 'fs';
 import { promisify } from 'util';
 import { resolve } from 'path';
-import { NETWORKS, RawToken, Token, TOKEN_SCHEMA } from './constants';
+import getUuidByString from 'uuid-by-string';
+import { NETWORK_NAMES, RawToken, Token, TOKEN_SCHEMA } from './constants';
 
 const readdir = promisify(fs.readdir);
 const readFile = promisify(fs.readFile);
@@ -16,11 +17,12 @@ const access = promisify(fs.access);
  */
 export const checkNetworks = (networks: string[]) => {
   networks.forEach(network => {
-    if (!NETWORKS.includes(network)) {
+    if (!NETWORK_NAMES.includes(network)) {
       throw new Error(
-        `Network '${network}' is not supported. Available networks are: ${['all', ...NETWORKS].join(
-          ', '
-        )}`
+        `Network '${network}' is not supported. Available networks are: ${[
+          'all',
+          ...NETWORK_NAMES
+        ].join(', ')}`
       );
     }
   });
@@ -82,6 +84,21 @@ export const parseTokenFiles = async (path: string, exclude: string[]): Promise<
 };
 
 /**
+ * Add a unique ID (UUID) to each token. This uses name-based UUIDs and is deterministic, based on
+ * the chain ID and token address.
+ *
+ * @param {Token[]} tokens
+ * @param {number} chainId
+ * @return {Token[]}
+ */
+export const addUniqueId = (tokens: Token[], chainId: number): Token[] => {
+  return tokens.map(token => ({
+    ...token,
+    uuid: getUuidByString(`${chainId}-${token.symbol}`)
+  }));
+};
+
+/**
  * Finds duplicate tokens and changes the symbols for the duplicates.
  *
  * @param {Token[]} tokens
@@ -102,7 +119,7 @@ export const fixDuplicates = (tokens: Token[]): Token[] => {
 
       return [...checkedTokens, newToken];
     }, [])
-    .map(({ symbol, newSymbol, address, decimal }) => ({ address, symbol: newSymbol, decimal }));
+    .map(({ symbol, newSymbol, address, ...rest }) => ({ address, symbol: newSymbol, ...rest }));
 };
 
 /**
