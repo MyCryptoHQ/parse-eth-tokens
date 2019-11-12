@@ -1,8 +1,8 @@
 # parse-eth-tokens
 
 [![npm](https://img.shields.io/npm/v/parse-eth-tokens)](https://www.npmjs.com/package/parse-eth-tokens)
-[![codecov](https://codecov.io/gh/Mrtenz/parse-eth-tokens/branch/master/graph/badge.svg)](https://codecov.io/gh/Mrtenz/parse-eth-tokens)
-[![Travis](https://travis-ci.com/Mrtenz/parse-eth-tokens.svg?branch=master)](https://travis-ci.com/Mrtenz/parse-eth-tokens)
+[![codecov](https://codecov.io/gh/MyCryptoHQ/parse-eth-tokens/branch/master/graph/badge.svg)](https://codecov.io/gh/MyCryptoHQ/parse-eth-tokens)
+[![Travis](https://travis-ci.com/MyCryptoHQ/parse-eth-tokens.svg?branch=master)](https://travis-ci.com/MyCryptoHQ/parse-eth-tokens)
 
 This is a simple CLI tool to parse the [`ethereum-lists/tokens`](https://github.com/ethereum-lists/tokens) repository to a format that is used by MyCrypto. The tool pulls the repository from GitHub and outputs the parsed JSON file(s).
 
