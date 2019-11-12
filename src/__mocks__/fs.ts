@@ -17,21 +17,24 @@ export default {
         data = {
           address: '0x0',
           decimals: 18,
-          symbol: 'FOO'
+          symbol: 'FOO',
+          name: 'Foo'
         };
         break;
       case 'bar.json':
         data = {
           address: '0x0000000000000000000000000000000000000000',
           decimals: 18,
-          symbol: 'BAR'
+          symbol: 'BAR',
+          name: 'Bar'
         };
         break;
       case 'baz.json':
         data = {
           address: '0x0000000000000000000000000000000000000001',
           decimals: 18,
-          symbol: 'BAZ'
+          symbol: 'BAZ',
+          name: 'Baz'
         };
         break;
       case 'invalid.json':

@@ -37,7 +37,8 @@ describe('parseJsonFile', () => {
     expect(file).toStrictEqual({
       address: '0x0',
       decimals: 18,
-      symbol: 'FOO'
+      symbol: 'FOO',
+      name: 'Foo'
     });
   });
 
@@ -52,6 +53,7 @@ describe('validateTokenData', () => {
       address: '0x0000000000000000000000000000000000000000',
       decimals: 18,
       symbol: 'FOO',
+      name: 'Foo',
       foo: 'bar'
     };
 
@@ -62,7 +64,8 @@ describe('validateTokenData', () => {
     const token = {
       address: '0x0000000000000000000000000000000000000000',
       decimals: 18,
-      symbol: 'FOO'
+      symbol: 'FOO',
+      name: 'Foo'
     };
 
     expect(validateTokenData(token)).toHaveProperty(
@@ -79,14 +82,16 @@ describe('validateTokenData', () => {
       validateTokenData({
         address: '0x0',
         decimals: 18,
-        symbol: 'FOO'
+        symbol: 'FOO',
+        name: 'Foo'
       })
     ).toThrow();
     expect(() =>
       validateTokenData({
         address: '0x0000000000000000000000000000000000000000',
         decimals: -1,
-        symbol: 'FOO'
+        symbol: 'FOO',
+        name: 'Foo'
       })
     ).toThrow();
   });
@@ -100,12 +105,14 @@ describe('parseTokenFiles', () => {
     expect(tokens[0]).toStrictEqual({
       address: '0x0000000000000000000000000000000000000000',
       symbol: 'BAR',
-      decimal: 18
+      decimal: 18,
+      name: 'Bar'
     });
     expect(tokens[1]).toStrictEqual({
       address: '0x0000000000000000000000000000000000000001',
       symbol: 'BAZ',
-      decimal: 18
+      decimal: 18,
+      name: 'Baz'
     });
   });
 
@@ -116,7 +123,8 @@ describe('parseTokenFiles', () => {
     expect(tokens[0]).toStrictEqual({
       address: '0x0000000000000000000000000000000000000001',
       symbol: 'BAZ',
-      decimal: 18
+      decimal: 18,
+      name: 'Baz'
     });
   });
 });
@@ -127,22 +135,26 @@ describe('addUniqueId', () => {
       {
         address: '0x0000000000000000000000000000000000000000',
         symbol: 'FOO',
-        decimal: 18
+        decimal: 18,
+        name: 'Foo'
       },
       {
         address: '0x0000000000000000000000000000000000000001',
         symbol: 'BAR',
-        decimal: 18
+        decimal: 18,
+        name: 'Bar'
       },
       {
         address: '0x0000000000000000000000000000000000000002',
         symbol: 'BAZ',
-        decimal: 18
+        decimal: 18,
+        name: 'Baz'
       },
       {
         address: '0x0000000000000000000000000000000000000003',
         symbol: 'QUX',
-        decimal: 18
+        decimal: 18,
+        name: 'Qux'
       }
     ];
 
@@ -158,24 +170,28 @@ describe('fixDuplicates', () => {
         address: '0x0000000000000000000000000000000000000000',
         symbol: 'FOO',
         decimal: 18,
+        name: 'Foo',
         uuid: ''
       },
       {
         address: '0x0000000000000000000000000000000000000001',
         symbol: 'FOO',
         decimal: 18,
+        name: 'Foo',
         uuid: ''
       },
       {
         address: '0x0000000000000000000000000000000000000002',
         symbol: 'FOO',
         decimal: 18,
+        name: 'Foo',
         uuid: ''
       },
       {
         address: '0x0000000000000000000000000000000000000003',
         symbol: 'BAR',
         decimal: 18,
+        name: 'Bar',
         uuid: ''
       }
     ];
@@ -197,24 +213,28 @@ describe('sortTokens', () => {
         address: '0x0000000000000000000000000000000000000000',
         decimal: 18,
         symbol: 'FOO',
+        name: 'Foo',
         uuid: ''
       },
       {
         address: '0x0000000000000000000000000000000000000000',
         decimal: 18,
         symbol: 'BAR',
+        name: 'Bar',
         uuid: ''
       },
       {
         address: '0x0000000000000000000000000000000000000000',
         decimal: 18,
         symbol: 'BAZ',
+        name: 'Baz',
         uuid: ''
       },
       {
         address: '0x0000000000000000000000000000000000000000',
         decimal: 18,
         symbol: 'QUX',
+        name: 'Qux',
         uuid: ''
       }
     ];
@@ -258,24 +278,28 @@ describe('writeToDisk', () => {
         address: '0x0000000000000000000000000000000000000000',
         symbol: 'FOO',
         decimal: 18,
+        name: 'Foo',
         uuid: ''
       },
       {
         address: '0x0000000000000000000000000000000000000001',
         symbol: 'FOO',
         decimal: 18,
+        name: 'Foo',
         uuid: ''
       },
       {
         address: '0x0000000000000000000000000000000000000002',
         symbol: 'FOO',
         decimal: 18,
+        name: 'Foo',
         uuid: ''
       },
       {
         address: '0x0000000000000000000000000000000000000003',
         symbol: 'BAR',
         decimal: 18,
+        name: 'Bar',
         uuid: ''
       }
     ];

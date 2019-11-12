@@ -63,7 +63,8 @@ export const TOKEN_SCHEMA = object({
     .required(),
   decimal: number()
     .min(0)
-    .required()
+    .required(),
+  name: string().required()
 })
   .options({ stripUnknown: true })
   .rename('decimals', 'decimal');
@@ -75,6 +76,7 @@ export interface RawToken {
   address?: string;
   symbol?: string;
   decimals?: number | string;
+  name?: string;
 }
 
 /**
@@ -84,5 +86,6 @@ export interface Token {
   address: string;
   symbol: string;
   decimal: number;
+  name: string;
   uuid: string;
 }
