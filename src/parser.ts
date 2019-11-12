@@ -94,7 +94,7 @@ export const parseTokenFiles = async (path: string, exclude: string[]): Promise<
 export const addUniqueId = (tokens: Token[], chainId: number): Token[] => {
   return tokens.map(token => ({
     ...token,
-    uuid: getUuidByString(`${chainId}-${token.symbol}`)
+    uuid: getUuidByString(`${chainId}-${token.address}`)
   }));
 };
 
