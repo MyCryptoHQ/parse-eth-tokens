@@ -119,7 +119,13 @@ export const fixDuplicates = (tokens: Token[]): Token[] => {
 
       return [...checkedTokens, newToken];
     }, [])
-    .map(({ symbol, newSymbol, address, ...rest }) => ({ address, symbol: newSymbol, ...rest }));
+    .map(({ symbol, newSymbol, address, decimal, name, uuid }) => ({
+      address,
+      symbol: newSymbol,
+      decimal,
+      name,
+      uuid
+    }));
 };
 
 /**
