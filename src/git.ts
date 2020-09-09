@@ -1,9 +1,6 @@
-import fs from 'fs';
-import { promisify } from 'util';
-import { Clone, Repository } from 'nodegit';
+import { promises as fs } from 'fs';
 import { REPO_URL, OUTPUT_PATH } from './constants';
-
-const access = promisify(fs.access);
+import simpleGit from 'simple-git';
 
 /**
  * Update the master branch of an existing Git repo.
@@ -11,9 +8,8 @@ const access = promisify(fs.access);
  * @return {Promise<void>>}
  */
 export const updateRepository = async (): Promise<void> => {
-  const repository = await Repository.open(OUTPUT_PATH);
-  await repository.fetchAll();
-  await repository.mergeBranches('master', 'origin/master');
+  const git = simpleGit(OUTPUT_PATH);
+  await git.pull();
 };
 
 /**
@@ -23,13 +19,15 @@ export const updateRepository = async (): Promise<void> => {
  */
 export const fetchRepository = async (): Promise<void> => {
   try {
-    await access(OUTPUT_PATH);
+    await fs.access(OUTPUT_PATH);
     await updateRepository();
   } catch (error) {
     if (error && error.code !== 'ENOENT') {
       throw error;
     }
 
-    await Clone.clone(REPO_URL, OUTPUT_PATH);
+    await fs.mkdir(OUTPUT_PATH, { recursive: true });
+    const git = simpleGit(OUTPUT_PATH);
+    await git.clone(REPO_URL, OUTPUT_PATH);
   }
 };

@@ -1,14 +1,8 @@
-import fs from 'fs';
-import { promisify } from 'util';
+import { promises as fs } from 'fs';
 import { resolve } from 'path';
 import mkdirp from 'mkdirp';
 import getUuidByString from 'uuid-by-string';
 import { NETWORK_NAMES, RawToken, Token, TOKEN_SCHEMA } from './constants';
-
-const readdir = promisify(fs.readdir);
-const readFile = promisify(fs.readFile);
-const writeFile = promisify(fs.writeFile);
-const access = promisify(fs.access);
 
 /**
  * Checks available networks and throws an error if the provided network does not exist.
@@ -37,7 +31,7 @@ export const checkNetworks = (networks: string[]) => {
  */
 export const parseJsonFile = async <T>(file: string): Promise<T> => {
   try {
-    const json = await readFile(file, 'utf8');
+    const json = await fs.readFile(file, 'utf8');
     return JSON.parse(json);
   } catch (error) {
     throw new Error(`Failed to parse file ${file}: ${error.message}`);
@@ -69,7 +63,7 @@ export const validateTokenData = (token: RawToken): Token => {
  * @return {Promise<Token[]>}
  */
 export const parseTokenFiles = async (path: string, exclude: string[]): Promise<Token[]> => {
-  const files = await readdir(path);
+  const files = await fs.readdir(path);
 
   return files.reduce<Promise<Token[]>>(async (tokens, file) => {
     const tokenData = await parseJsonFile<RawToken>(resolve(path, file));
@@ -146,7 +140,7 @@ export const sortTokens = (tokens: Token[]): Token[] => {
  */
 export const createOutputFolder = async (path: string): Promise<void> => {
   try {
-    await access(path);
+    await fs.access(path);
   } catch (error) {
     if (error.code !== 'ENOENT') {
       throw new Error(`Failed to create output folder: ${error.message}`);
@@ -167,5 +161,5 @@ export const createOutputFolder = async (path: string): Promise<void> => {
  */
 export const writeToDisk = async (tokens: Token[], path: string, name: string): Promise<void> => {
   const json = JSON.stringify(tokens, null, 2);
-  return writeFile(resolve(path, name), json, 'utf8');
+  return fs.writeFile(resolve(path, name), json, 'utf8');
 };

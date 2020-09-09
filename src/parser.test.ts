@@ -1,4 +1,4 @@
-import fs from 'fs';
+import { promises as fs } from 'fs';
 import { resolve } from 'path';
 import mkdirp from 'mkdirp';
 import {
@@ -260,11 +260,11 @@ describe('createOutputFolder', () => {
 
   it('throws an error if the error code is not ENOENT', async () => {
     const access = fs.access as jest.MockedFunction<typeof fs.access>;
-    access.mockImplementationOnce((path: fs.PathLike, callback: (error: Error | null) => void) => {
+    access.mockImplementationOnce(async () => {
       const error = new Error() as NodeJS.ErrnoException;
       error.code = 'EFOO';
 
-      callback(error);
+      throw error;
     });
 
     await expect(createOutputFolder('foo')).rejects.toThrow();
