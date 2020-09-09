@@ -1,5 +1,5 @@
 import { Command } from 'commander';
-import { NETWORK_NAMES, NETWORKS, VERSION } from './constants';
+import { NETWORK_NAMES, VERSION } from './constants';
 import { parseTokens } from './runner';
 
 /**

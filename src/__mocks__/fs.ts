@@ -1,13 +1,11 @@
 import { basename } from 'path';
 
-type Callback<T> = (error?: Error, data?: T) => void;
-
-export default {
-  readdir(path: string, callback: Callback<string[]>) {
-    callback(undefined, ['bar.json', 'baz.json']);
+export const promises = {
+  async readdir() {
+    return ['bar.json', 'baz.json'];
   },
 
-  readFile(path: string, encoding: string, callback: Callback<string>) {
+  async readFile(path: string) {
     const file = basename(path);
 
     // Few different test cases
@@ -38,26 +36,20 @@ export default {
         };
         break;
       case 'invalid.json':
-        return callback(undefined, 'I am invalid JSON');
+        return 'I am invalid JSON';
     }
 
-    callback(undefined, JSON.stringify(data));
+    return JSON.stringify(data);
   },
 
-  writeFile: jest
-    .fn()
-    .mockImplementation((path: string, data: string, encoding: string, callback: Callback<void>) =>
-      callback()
-    ),
+  writeFile: jest.fn().mockImplementation(() => Promise.resolve()),
 
-  mkdir: jest
-    .fn()
-    .mockImplementation((path: string, options: any, callback: Callback<void>) => callback()),
+  mkdir: jest.fn().mockImplementation(() => Promise.resolve()),
 
-  access: jest.fn().mockImplementation((path: string, callback: Callback<void>) => {
+  access: jest.fn().mockImplementation(async () => {
     const error = new Error() as NodeJS.ErrnoException;
     error.code = 'ENOENT';
 
-    callback(error);
+    throw error;
   })
 };

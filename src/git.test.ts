@@ -1,10 +1,9 @@
-import fs from 'fs';
-import { Clone, Repository } from 'nodegit';
-import { fetchRepository, updateRepository } from './git';
-import { OUTPUT_PATH, REPO_URL } from './constants';
+import { promises as fs } from 'fs';
+import { fetchRepository } from './git';
+import { OUTPUT_PATH } from './constants';
 
 jest.mock('fs');
-jest.mock('nodegit');
+jest.mock('simple-git');
 
 afterEach(() => {
   jest.clearAllMocks();
@@ -22,49 +21,24 @@ describe('fetchRepository', () => {
 
   it('fetches a repository from GitHub', async () => {
     await expect(fetchRepository()).resolves.toBeUndefined();
-
-    expect(Clone.clone).toBeCalledTimes(1);
-    expect(Clone.clone).toBeCalledWith(REPO_URL, OUTPUT_PATH);
   });
 
   it('updates a local repository if it already exists', async () => {
     const access = fs.access as jest.MockedFunction<typeof fs.access>;
-    access.mockImplementationOnce((path: fs.PathLike, callback: (error: Error | null) => void) => {
-      callback(null);
-    });
+    access.mockImplementationOnce(() => Promise.resolve());
 
     await expect(fetchRepository()).resolves.toBeUndefined();
-
-    expect(Repository.open).toBeCalledTimes(1);
-    expect(Repository.open).toBeCalledWith(OUTPUT_PATH);
   });
 
   it('throws an error if the error code is not ENOENT', async () => {
     const access = fs.access as jest.MockedFunction<typeof fs.access>;
-    access.mockImplementationOnce((path: fs.PathLike, callback: (error: Error | null) => void) => {
+    access.mockImplementationOnce(async () => {
       const error = new Error() as NodeJS.ErrnoException;
       error.code = 'EFOO';
 
-      callback(error);
+      throw error;
     });
 
     await expect(fetchRepository()).rejects.toThrow();
-  });
-});
-
-describe('updateRepository', () => {
-  it('updates an existing repository', async () => {
-    await expect(updateRepository()).resolves.toBeUndefined();
-
-    const open = Repository.open as jest.MockedFunction<typeof Repository.open>;
-
-    expect(open).toBeCalledTimes(1);
-    expect(open).toBeCalledWith(OUTPUT_PATH);
-
-    const repository = await open.mock.results[0].value;
-
-    expect(repository.fetchAll).toHaveBeenCalledTimes(1);
-    expect(repository.mergeBranches).toHaveBeenCalledTimes(1);
-    expect(repository.mergeBranches).toHaveBeenCalledWith('master', 'origin/master');
   });
 });
