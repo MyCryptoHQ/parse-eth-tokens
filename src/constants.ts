@@ -48,6 +48,10 @@ export const NETWORKS = [
   {
     name: 'ubq',
     chainId: 8
+  },
+  {
+    name: 'rsk',
+    chainId: 30
   }
 ];
 
