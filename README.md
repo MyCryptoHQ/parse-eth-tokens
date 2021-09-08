@@ -60,6 +60,7 @@ All networks defined in [`ethereum-lists/tokens`](https://github.com/ethereum-li
 * Rinkeby (rin)
 * Ropsten (rop)
 * Ubiq (ubq)
+* RSK (rsk)
 
 The networks can be set using the `--networks` option. To parse the tokens for all networks, use `--networks all`.
 
